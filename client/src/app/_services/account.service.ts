@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, signal } from '@angular/core';
 import { BehaviorSubject, map } from 'rxjs';
 import { User } from '../_models/User';
 
@@ -10,10 +10,8 @@ export class AccountService {
 
   baseUrl='https://localhost:7079/api';
 
-  private currentUserSource=new BehaviorSubject<User | null>(null);
-  currentUser$=this.currentUserSource.asObservable();
 
-
+  currentUser=signal<User|null>(null);
   constructor(private http:HttpClient) { }
 
   login(model:any)
@@ -25,7 +23,8 @@ export class AccountService {
           if(user)
             {
               localStorage.setItem('user',JSON.stringify(user))
-              this.currentUserSource.next(user);
+              this.currentUser.set(user);
+           
             }
         })
        );
@@ -40,22 +39,19 @@ export class AccountService {
           if(user)
             {
               localStorage.setItem('user',JSON.stringify(user))
-              this.currentUserSource.next(user);
+              
             }
             return user;
         })
        );
   }
 
-  setCurrentUser(user:User)
-  {
-      this.currentUserSource.next(user);
-  }
+  
 
   logout()
   {
     localStorage.removeItem('user');
-    this.currentUserSource.next(null);
+    this.currentUser.set(null);
   }
 
 }
