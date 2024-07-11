@@ -8,17 +8,17 @@ import { Component, Inject, OnInit } from '@angular/core';
 })
 export class HomeComponent implements OnInit {
 
-  constructor(private http:HttpClient)
+ 
+  ngOnInit(): void
   {
-
-  } 
-  registerMode=false;
-  users:any;
-
-  ngOnInit(): void {
-    this.getUsers();
     
   }
+
+ 
+  registerMode=false;
+  
+
+ 
  
   cancelRegisterMode(event:boolean)
   {
@@ -30,13 +30,5 @@ export class HomeComponent implements OnInit {
     this.registerMode = !this.registerMode
   }
 
-  getUsers()
-  {
-    this.http.get('https://localhost:7079/api/users').subscribe({
-      next: response => this.users=response,
-      error: error => console.log(error),
-      complete:() => console.log('Request has completed'+this.users)
-    });  
-  }
 
 }

@@ -1,5 +1,8 @@
 ﻿using API.Database;
+using API.DTOs;
 using API.Entities;
+using API.Interfaces;
+using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -9,20 +12,16 @@ namespace API.Controllers
 {
 
     [Authorize]
-    public class UsersController : BaseAPIController
+    public class UsersController(IUserRepository userRepository) : BaseAPIController
     {
-        private readonly DataContext _context;
-        public UsersController(DataContext context)
-        {
-            _context = context;
-        }
-
-        [AllowAnonymous]
+     
+       
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<AppUser>>> GetUsers()
-        {
-            var users =await _context.Users.ToListAsync();
-            return users;
+        public async Task<ActionResult<IEnumerable<MemberDto>>> GetUsers()
+         {
+            var users =await userRepository.GetMembersAsync();
+
+            return Ok(users);
         }
 
         /*
@@ -47,10 +46,14 @@ we need to use await operator to tell this method that we're going to wait for i
 
 
 
-        [HttpGet("{id}")]  //api/users/2
-        public async Task<ActionResult<AppUser>> GetUser(int id)
+        [HttpGet("{username}")]  //api/users/2
+        public async Task<ActionResult<MemberDto>> GetUser(string username)
         {
-            return await _context.Users.FindAsync(id);
+            var user = await userRepository.GetMemberAsync(username);
+
+            if(user == null) return NotFound();
+
+            return user;
         }
 
 

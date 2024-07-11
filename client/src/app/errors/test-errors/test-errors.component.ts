@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, inject } from '@angular/core';
+import { environment } from 'src/environments/environment.development';
 
 
 @Component({
@@ -9,7 +10,7 @@ import { Component, inject } from '@angular/core';
 })
 export class TestErrorsComponent {
 
-baseUrl='https://localhost:7079/api/'
+baseUrl=environment.apiUrl
 
 private http=inject(HttpClient);
 
